@@ -1,4 +1,4 @@
-<form action="{{ route('noted.store') }}" method="POST">
+{{-- <form action="{{ route('noted.store') }}" method="POST">
   @csrf
   <div class="mb-3">
       <label for="title" class="form-label">Judul</label>
@@ -11,8 +11,8 @@
   </div>
 
   <button type="submit" class="btn btn-primary">Simpan</button>
-</form>
-{{-- <!DOCTYPE html>
+</form> --}}
+<!DOCTYPE html>
 <html lang="en">
 
 
@@ -233,7 +233,7 @@
             <a class="nav-link active" href="{{ route('noted.dashboard') }}"><i class="fas fa-home me-3"></i>Home</a>
           </li>
           <li class="nav-item mb-2">
-            <a class="nav-link" href="{{ route('noted.show') }}"><i class="fas fa-file-alt me-3"></i>Notes</a>
+            <a class="nav-link" href="{{ route('notes.show') }}"><i class="fas fa-file-alt me-3"></i>Notes</a>
           </li>
       <li class="nav-item mb-2"><a class="nav-link" href="tasklist.html"><i class="fas fa-tasks me-3"></i>Task List</a>
       </li>
@@ -245,78 +245,86 @@
 
   <!-- MAIN CONTENT -->
   <div class="main">
-    <a href="{{ route('noted.show') }}" style="text-decoration: none; color: #4B322D; font-weight: 600; font-size: 20px;">
-      <i class="fas fa-chevron-left me-2 mb-5"></i> Back
+    <a href="{{ route('notes.show') }}" style="text-decoration: none; color: #4B322D; font-weight: 600; font-size: 20px;">
+      <i class="fas fa-chevron-left me-2"></i> Back
     </a>
 
+    <form action="{{ route('noted.store') }}" method="POST" onsubmit="return saveContentToInput();">
+      @csrf
 
-    <input id="note-title" class="title-input fw-bold" style="letter-spacing: 0.05em;" type="text" placeholder="Title"
-      onfocus="this.placeholder='';" onblur="this.placeholder='Title';" />
+      <input id="note-title" name="title" class="title-input fw-bold" type="text" placeholder="Title" required />
 
+      <div id="editor" contenteditable="true" spellcheck="false" style="background: #ECE8E3; padding: 1rem;">
+        Tulis catatanmu di sini...
+      </div>
 
-    <!-- Editor -->
-    <div id="editor" contenteditable="true" spellcheck="false">
-      Write your note…
-    </div>
+      <input type="hidden" name="content" id="note-content" />
 
+      <div class="toolbar mt-4">
+        <select onchange="setFont(this.value)">
+          <option value="DM Sans">DM Sans</option>
+          <option value="Inter">Inter</option>
+          <option value="Courier Prime">Courier Prime</option>
+          <option value="Poppins">Poppins</option>
+        </select>
 
-    <!-- Toolbar BELOW editor -->
-    <div class="toolbar">
-      <select onchange="setFont(this.value)" style="font-family: inherit;">
-        <option value="DM Sans" style="font-family: 'DM Sans', sans-serif;">DM Sans</option>
-        <option value="Inter" style="font-family: 'Inter', sans-serif;">Inter</option>
-        <option value="Courier Prime" style="font-family: 'Courier Prime', monospace;">Courier Prime</option>
-        <option value="Poppins" style="font-family: 'Poppins', sans-serif;">Poppins</option>
-      </select>
+        <select onchange="setSize(this.value)">
+          <option value="1">10px</option>
+          <option value="2">13px</option>
+          <option value="3" selected>16px</option>
+          <option value="4">18px</option>
+          <option value="5">24px</option>
+          <option value="6">32px</option>
+        </select>
 
+        <input type="color" onchange="setColor(this.value)" title="Font Color" />
+        <div class="btn-divider"></div>
 
-      <select onchange="setSize(this.value)">
-        <option value="1">10px</option>
-        <option value="2">13px</option>
-        <option value="3" selected>16px</option>
-        <option value="4">18px</option>
-        <option value="5">24px</option>
-        <option value="6">32px</option>
-      </select>
+        <button type="button" onclick="execCmd('bold')" title="Bold"><i class="fa-solid fa-bold"></i></button>
+        <button type="button" onclick="execCmd('italic')" title="Italic"><i class="fa-solid fa-italic"></i></button>
+        <button type="button" onclick="execCmd('underline')" title="Underline"><i class="fa-solid fa-underline"></i></button>
+        <div class="btn-divider"></div>
 
+        <button type="button" onclick="insertImage()" title="Insert Image"><i class="fa-regular fa-image"></i></button>
+        <div class="btn-divider"></div>
 
-      <input type="color" onchange="setColor(this.value)" title="Font Color" />
+        <button type="button" onclick="execCmd('justifyLeft')" title="Left"><i class="fa-solid fa-align-left"></i></button>
+        <button type="button" onclick="execCmd('justifyCenter')" title="Center"><i class="fa-solid fa-align-center"></i></button>
+        <button type="button" onclick="execCmd('justifyRight')" title="Right"><i class="fa-solid fa-align-right"></i></button>
 
-
-      <div class="btn-divider"></div>
-
-
-      <button onclick="execCmd('bold')" title="Bold"><i class="fa-solid fa-bold"></i></button>
-      <button onclick="execCmd('italic')" title="Italic"><i class="fa-solid fa-italic"></i></button>
-      <button onclick="execCmd('underline')" title="Underline"><i class="fa-solid fa-underline"></i></button>
-
-
-      <div class="btn-divider"></div>
-
-
-      <button onclick="insertImage()" title="Insert Image"><i class="fa-regular fa-image"></i></button>
-
-
-      <div class="btn-divider"></div>
-
-
-      <button onclick="execCmd('justifyLeft')" title="Left"><i class="fa-solid fa-align-left"></i></button>
-      <button onclick="execCmd('justifyCenter')" title="Center"><i class="fa-solid fa-align-center"></i></button>
-      <button onclick="execCmd('justifyRight')" title="Right"><i class="fa-solid fa-align-right"></i></button>
-
-      <div class="btn-divider"></div>
-      <div class="ms-auto">
-        <form action="{{ route('noted.store') }}" method="POST" id="noteForm">
-          @csrf
-          <input type="hidden" name="title" id="hidden-title">
-          <input type="hidden" name="content" id="hidden-content">
+        <div class="ms-auto">
           <button class="btn-save" type="submit">
             <i class="fa-solid fa-floppy-disk me-1"></i> Save
           </button>
-        </form>     
+        </div>
       </div>
-    </div>
+    </form>
   </div>
+
+  <!-- JavaScript -->
+  <script>
+    function execCmd(cmd) {
+      document.execCommand(cmd, false, null);
+    }
+    function setFont(f) {
+      document.execCommand('fontName', false, f);
+    }
+    function setSize(s) {
+      document.execCommand('fontSize', false, s);
+    }
+    function setColor(c) {
+      document.execCommand('foreColor', false, c);
+    }
+    function insertImage() {
+      const url = prompt('Enter image URL:');
+      if (url) document.execCommand('insertImage', false, url);
+    }
+    function saveContentToInput() {
+      const content = document.getElementById('editor').innerHTML;
+      document.getElementById('note-content').value = content;
+      return true;
+    }
+  </script>
 
 
   <!-- Bootstrap JS -->
@@ -353,4 +361,4 @@
 </html>
 
 
- --}}
+

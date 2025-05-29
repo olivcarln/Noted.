@@ -9,15 +9,17 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware('auth');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::controller(NotedController::class)->group(function () {
     Route::get('/noted', 'index')->name('noted.dashboard');
-    Route::get('/noted/show', 'show')->name('noted.show');
-    Route::get('/noted/create', 'create')->name('noted.create');
+    Route::get('/noted/show', [NotedController::class, 'show'])->name('notes.show');
+    Route::get('/noted/create', 'create')->name('notes.create');
     Route::post('/noted/store', 'store')->name('noted.store');
-    Route::get('/edit/noted{id}', 'edit')->name('noted.edit'); // Menampilkan Form Edit
+    Route::get('/edit/noted/{id}', [NotedController::class, 'edit'])->name('noted.edit');
     Route::delete('/delete/noted{id}', 'delete')->name('noted.delete'); // Menghapus Data Karyawan
 
 

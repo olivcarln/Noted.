@@ -219,7 +219,7 @@
         <a class="nav-link" href="{{ route('noted.dashboard') }}"><i class="fas fa-home me-3"></i>Home</a>
       </li>
       <li class="nav-item mb-2">
-        <a class="nav-link active" href="{{ route('noted.show') }}"><i class="fas fa-file-alt me-3"></i>Notes</a>
+        <a class="nav-link active" href="{{ route('notes.show') }}"><i class="fas fa-file-alt me-3"></i>Notes</a>
       </li>
       <li class="nav-item mb-2">
         <a class="nav-link" href="#"><i class="fas fa-tasks me-3"></i>Task List</a>
@@ -323,97 +323,53 @@
 
 
       <!-- My Notes -->
-      <div class="mt-5">
-        <div class="section-title">My Notes</div>
-        <ul class="nav nav-tabs mb-4" id="notesTab" role="tablist">
-          <li class="nav-item">
-            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#notes-today">Today</button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#notes-week">This Week</button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#notes-month">This Month</button>
-          </li>
-        </ul>
-        <!-- Notes Card -->
-        <div class="tab-content">
-          <div class="tab-pane fade show active" id="notes-today">
-            <div class="row g-4">
-              <div class="col-md-3">
-                <a href="{{ route('noted.create') }}" class="card-note new" style="text-decoration: none; color: inherit;">
-                  <i class="fas fa-note-sticky fa-2x me-2"></i>
-                  <div class="content mt-2">New Note</div>
-              </a>
-              </div>
+<div class="mt-5">
+  <div class="section-title">My Notes</div>
+  <ul class="nav nav-tabs mb-4" id="notesTab" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#notes-today">Today</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#notes-week">This Week</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#notes-month">This Month</button>
+    </li>
+  </ul>
 
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="notes-today">
+      <div class="row g-4">
+        <!-- Add New Note Card -->
+        <div class="col-md-3">
+          <a href="{{ route('notes.create') }}" class="card-note new" style="text-decoration: none; color: inherit;">
+            <i class="fas fa-note-sticky fa-2x me-2"></i>
+            <div class="content mt-2">New Note</div>
+          </a>
+        </div>
 
-      <!-- Finpro Concept -->
-      <div class="col-md-3">
-        <div class="card card-note bg1 p-3 rounded">
-          <div class="title position-relative mb-2">
-            <span class="h6 fw-bold">Finpro Concept</span>
-            <i class="fa-solid fa-ellipsis-vertical position-absolute"
-               style="top: 8px; right: 8px;"></i>
-          </div>
-          <div class="text small">
-            "Kalian finpro berapa minggu?" Minggu? Hari kali :]
+        <!-- Loop Notes -->
+        @foreach($notes as $note)
+        <div class="col-md-3">
+          <div class="card card-note bg1 p-3 rounded">
+            <div class="title position-relative mb-2">
+              <h5 class="h6 fw-bold">{{ $note->title }}</h5>
+              <i class="fa-solid fa-ellipsis-vertical position-absolute" style="top: 8px; right: 8px;"></i>
+            </div>
+            <div class="text small mb-2">{{ Str::limit($note->body, 100) }}</div>
+            <div class="text-muted small">{{ $note->created_at->format('d M Y H:i') }}</div>
           </div>
         </div>
-      </div>
+        @endforeach
 
-
-      <!-- Research Answer -->
-      <div class="col-md-3">
-        <div class="card card-note bg2 p-3 rounded">
-          <div class="title position-relative mb-2">
-            <span class="h6 fw-bold">Research Answer</span>
-            <i class="fa-solid fa-ellipsis-vertical position-absolute"
-               style="top: 8px; right: 8px;"></i>
-          </div>
-          <div class="text small">
-            Bapak Rio: "Menurut saya sih bagus, kepoin karena ga bisa buatnya..."
-          </div>
-        </div>
-      </div>
-
-
-      <!-- Groceries List -->
-      <div class="col-md-3">
-        <div class="card card-note bg3 p-3 rounded">
-          <div class="title position-relative mb-2">
-            <span class="h6 fw-bold">Groceries List</span>
-            <i class="fa-solid fa-ellipsis-vertical position-absolute"
-               style="top: 8px; right: 8px;"></i>
-          </div>
-          <div class="text small">
-            Telor 1Kg<br>
-            Cabe Setan 1Ons<br>
-            Kentang 1/2 Kg...
-          </div>
-        </div>
-      </div>
-
-
-      <!-- Artmarket 2025 -->
-      <div class="col-md-3">
-        <div class="card card-note bg1 p-3 rounded">
-          <div class="title position-relative mb-2">
-            <span class="h6 fw-bold">Artmarket 2025</span>
-            <i class="fa-solid fa-ellipsis-vertical position-absolute"
-               style="top: 8px; right: 8px;"></i>
-          </div>
-          <div class="text small">
-            Trinkieland<br>
-            Tomoland<br>
-            Biggledot
-          </div>
-        </div>
       </div>
     </div>
   </div>
 </div>
 
+
+
+      
 
       </div>
     </div>

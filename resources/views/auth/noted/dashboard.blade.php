@@ -390,13 +390,23 @@
   </div>
 
 
+@if(Auth::check())
   <div class="d-flex align-items-center mb-4">
     <img src="asset/profile (2).png" alt="Profile" class="profile-img me-2">
     <div>
-      <strong style="color: #2C2220; font-weight: bold;">Raaaiiisaaaa</strong><br>
+      <strong style="color: #2C2220; font-weight: bold;">{{ Auth::user()->name }}</strong><br>
       <small>Private</small>
     </div>
   </div>
+@else
+  <div class="d-flex align-items-center mb-4">
+    <img src="asset/profile (2).png" alt="Profile" class="profile-img me-2">
+    <div>
+      <strong style="color: #2C2220; font-weight: bold;">Guest</strong><br>
+      <small>Public</small>
+    </div>
+  </div>
+@endif
 
 
   <ul class="nav flex-column">
@@ -404,7 +414,7 @@
       <a class="nav-link active" href="{{ route('noted.dashboard') }}"><i class="fas fa-home me-3"></i>Home</a>
     </li>
     <li class="nav-item mb-2">
-      <a class="nav-link" href="{{ route('noted.show') }}"><i class="fas fa-file-alt me-3"></i>Notes</a>
+      <a class="nav-link" href="{{ route('notes.show') }}"><i class="fas fa-file-alt me-3"></i>Notes</a>
     </li>
     <li class="nav-item mb-2">
       <a class="nav-link" href="#"><i class="fas fa-tasks me-3"></i>Task List</a>
@@ -429,10 +439,16 @@
     <i class="fa-solid fa-magnifying-glass position-absolute top-50 start-0 translate-middle-y ps-3" style="color: #C3C3C3;"></i>
   </div>
     <!-- Greeting -->
+    @if(Auth::check())
     <div class="mb-4">
-      <h2 class="greeting" style="font-weight: normal;">Hey, <span style="color: #446358; font-weight: bold;">{{ Auth::user()->name }}</span>!</h2>
+      <h2 class="greeting" style="font-weight: normal;">Hey, 
+        <span style="color: #446358; font-weight: bold;">
+          {{ Auth::user()->name }}
+        </span>!
+      </h2>
       <p class="greeting-p">What do you want to do today?</p>
     </div>
+  @endif
     <!-- Top Row: Notes & Recently Deleted -->
     <div class="row g-4 mb-4">
       <!-- Notes Summary -->
@@ -457,7 +473,7 @@
       <div class="col-md-6">
         <div class="card card-custom p-3">
           <h5 class="title-card" style="color: #4B322D;"><i class="fa-solid fa-trash me-2"></i></i>Recently Deleted</h5>
-          <p>{{ $notes->pluck('category')->unique()->count() }}</p>
+          {{-- <p>{{ $notes->pluck('category')->unique()->count() }}</p> --}}
           <div class="mt-3">
             <div class="deleted-card">
               <div>
@@ -488,25 +504,24 @@
         <i class="fa-solid fa-note-sticky me-2"></i>Current Notes
       </h5>
       <div class="mt-3">
-        @forelse ($notes as $note)
-          @if($notes->count() > 0)
-            <div class="note-card mb-3 p-3 border rounded d-flex justify-content-between align-items-center" style="background-color: #f9f9f9;">
-              <div>
-                <small class="text-uppercase text-muted">{{ $note->category}}</small>
-                <div><strong>{{ $note->title }}</strong></div>
-                <div><strong>{{ $note->content }}</strong></div>
-              </div>
-              <div class="d-flex gap-2">
-                <button class="tbc-btn-2 btn-sm btn-light" style="font-weight: 600;">Export Now</button>
-                <a href="{{ route('noted.edit', $note->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-                <form action="{{ route('noted.delete', $note->id) }}" method="POST">
-                  @csrf 
-                  @method('DELETE') 
-                  <button type="submit">Delete</button> 
-                </form> 
-              </div>
+        @forelse($notes as $note)
+          <div class="note-card mb-3 p-3 border rounded d-flex justify-content-between align-items-center" style="background-color: #724F48;">
+            <div class="mb-3 p-3 border rounded bg-white">
+              <h5>{{ $note->title }}</h5>
+              <div class="text-muted small">{{ $note->created_at->format('d M Y') }}</div>
+              <div>{!! Str::limit(strip_tags($note->content), 100) !!}</div>
+              <a href="{{ route('notes.show', $note->id) }}" class="btn btn-sm btn-outline-primary mt-2">View Detail</a>
             </div>
-          @endif
+            <div class="d-flex gap-2">
+              <a href="{{ route('noted.edit', $note->id) }}" class="tbc-btn-2 btn btn-sm btn-outline-primary">Edit</a>
+              <form action="{{ route('noted.delete', $note->id) }}" method="POST">
+                @csrf 
+                @method('DELETE') 
+                <button type="submit" class="tbc-btn-2">Delete</button> 
+              </form> 
+              <button class="tbc-btn-2 btn-sm btn-light" style="font-weight: 600;">Export Now</button>
+            </div>
+          </div>
         @empty
           <p class="text-muted">No notes yet. Start by adding one!</p>
         @endforelse
